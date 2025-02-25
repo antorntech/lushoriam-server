@@ -6,20 +6,10 @@ const adminSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
-    trim: true,
   },
   password: {
     type: String,
     required: true,
-  },
-  createdAt: {
-    type: String,
-    default: "N/A",
-  },
-  updateTime: {
-    type: String,
-    default: "N/A",
   },
 });
 
