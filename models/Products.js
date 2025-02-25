@@ -20,6 +20,9 @@ const productsSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
+  status: {
+    type: String,
+  },
 });
 
 // Export the Product model
