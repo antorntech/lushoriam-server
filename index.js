@@ -54,7 +54,7 @@ const port = process.env.PORT || 8000;
 
 // All Routes will be here
 app.get("/", (req, res) => {
-  res.send("Welcome to Designer Arif Server");
+  res.send("Welcome to Lushoriam Server");
 });
 
 app.use("/api/v1/admin", adminRoutes);
