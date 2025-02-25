@@ -44,6 +44,7 @@ app.use(
 );
 
 const adminRoutes = require("./routes/v1/admin.route");
+const productsRoutes = require("./routes/v1/product.route");
 const slidersRoutes = require("./routes/v1/slider.route");
 const faqsRoutes = require("./routes/v1/faq.route");
 const reviewsRoutes = require("./routes/v1/review.route");
@@ -61,6 +62,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/products", productsRoutes);
 app.use("/api/v1/sliders", slidersRoutes);
 app.use("/api/v1/faqs", faqsRoutes);
 app.use("/api/v1/reviews", reviewsRoutes);
