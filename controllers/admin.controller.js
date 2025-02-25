@@ -23,6 +23,7 @@ const generateTokens = (admin) => {
 module.exports.createAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const existingAdmin = await Admin.findOne({ email });
 
     if (existingAdmin) {
@@ -63,7 +64,6 @@ module.exports.adminLogin = async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful",
-      admin,
       accessToken,
       refreshToken,
     });
