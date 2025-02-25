@@ -3,12 +3,6 @@ const mongoose = require("mongoose");
 
 // Define the Admin schema
 const adminSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
   email: {
     type: String,
     required: true,
@@ -18,10 +12,6 @@ const adminSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-  },
-  role: {
-    type: String,
-    default: "admin", // You can modify this for different roles if needed
   },
   createdAt: {
     type: String,

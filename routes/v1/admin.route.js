@@ -10,4 +10,5 @@ app.post("/login", adminController.adminLogin);
 app.post("/refresh-token", adminController.refreshAccessToken);
 app.get("/", auth, adminController.getAdmin);
 app.put("/:adminId", auth, adminController.updatedAdmin);
+
 module.exports = app;

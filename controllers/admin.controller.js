@@ -22,7 +22,7 @@ const generateTokens = (admin) => {
 
 module.exports.createAdmin = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
     const existingAdmin = await Admin.findOne({ email });
 
     if (existingAdmin) {
@@ -31,7 +31,6 @@ module.exports.createAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = await Admin.create({
-      username,
       email,
       password: hashedPassword,
     });
