@@ -44,6 +44,9 @@ app.use(
 );
 
 const adminRoutes = require("./routes/v1/admin.route");
+const slidersRoutes = require("./routes/v1/slider.route");
+const faqsRoutes = require("./routes/v1/faq.route");
+const reviewsRoutes = require("./routes/v1/review.route");
 
 const connection = require("./db/connection");
 
@@ -58,6 +61,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/sliders", slidersRoutes);
+app.use("/api/v1/faqs", faqsRoutes);
+app.use("/api/v1/reviews", reviewsRoutes);
 
 app.listen(port, () => {
   console.log("listening on port " + port);
