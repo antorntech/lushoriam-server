@@ -48,6 +48,7 @@ const productsRoutes = require("./routes/v1/product.route");
 const slidersRoutes = require("./routes/v1/slider.route");
 const faqsRoutes = require("./routes/v1/faq.route");
 const reviewsRoutes = require("./routes/v1/review.route");
+const ordersRoutes = require("./routes/v1/order.route");
 
 const connection = require("./db/connection");
 
@@ -66,6 +67,7 @@ app.use("/api/v1/products", productsRoutes);
 app.use("/api/v1/sliders", slidersRoutes);
 app.use("/api/v1/faqs", faqsRoutes);
 app.use("/api/v1/reviews", reviewsRoutes);
+app.use("/api/v1/orders", ordersRoutes);
 
 app.listen(port, () => {
   console.log("listening on port " + port);

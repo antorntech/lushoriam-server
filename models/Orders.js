@@ -1,17 +1,23 @@
 const mongoose = require("mongoose");
 
-// Define the main Training schema
-const ordersSchema = new mongoose.Schema({
-  title: {
-    type: String,
+const orderSchema = new mongoose.Schema(
+  {
+    orderId: { type: String, required: true },
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    mobile: { type: String, required: true },
+    delivery: { type: String, enum: ["inside", "outside"], required: true },
+    productName: { type: String, required: true },
+    productImage: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    totalAmount: { type: Number, required: true },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
+    },
   },
-  details: {
-    type: String,
-  },
-  banner: {
-    type: String, // Assuming this will hold the image URL or file path
-  },
-});
+  { timestamps: true }
+);
 
-// Export the Order model
-module.exports = mongoose.model("Order", ordersSchema, "Orders");
+module.exports = mongoose.model("Order", orderSchema, "Orders");

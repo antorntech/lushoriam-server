@@ -12,6 +12,7 @@ app.put(
   upload.single("banner"),
   productsController.updateProducts
 );
+app.patch("/status/:productsId", productsController.updateProductStatus);
 app.delete("/delete/:productsId", productsController.deleteProducts);
 
 module.exports = app;

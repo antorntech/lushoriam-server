@@ -102,6 +102,41 @@ module.exports.updateProducts = async (req, res) => {
   }
 };
 
+module.exports.updateProductStatus = async (req, res) => {
+  try {
+    const { productsId } = req.params;
+    console.log(productsId);
+
+    // Find the product
+    const product = await Products.findById(productsId);
+    if (!product) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Product not found!",
+      });
+    }
+
+    // Toggle the status
+    const newStatus = product.status === "Pending" ? "Active" : "Pending";
+
+    // Update the product status
+    product.status = newStatus;
+    await product.save();
+
+    res.status(200).json({
+      status: "success",
+      message: `Product status updated to ${newStatus}!`,
+      data: product,
+    });
+  } catch (error) {
+    console.error("Error updating product status:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 // Delete a training by ID
 module.exports.deleteProducts = async (req, res) => {
   try {
