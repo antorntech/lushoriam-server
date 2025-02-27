@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema(
     address: { type: String, required: true },
     mobile: { type: String, required: true },
     delivery: { type: String, enum: ["inside", "outside"], required: true },
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     productName: { type: String, required: true },
     productImage: { type: String, required: true },
     quantity: { type: Number, required: true },

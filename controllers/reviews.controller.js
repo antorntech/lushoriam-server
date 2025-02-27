@@ -49,7 +49,7 @@ module.exports.addReviews = async (req, res) => {
   try {
     if (req.file) {
       Object.assign(req.body, {
-        logo: "/uploads/images/" + req.file.filename,
+        avatar: "/uploads/images/" + req.file.filename,
       });
     }
 
@@ -72,7 +72,7 @@ module.exports.updateReviews = async (req, res) => {
 
     if (req.file) {
       Object.assign(req.body, {
-        logo: "/uploads/images/" + req.file.filename,
+        avatar: "/uploads/images/" + req.file.filename,
       });
     }
 

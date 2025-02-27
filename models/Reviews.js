@@ -11,7 +11,7 @@ const reviewsSchema = new mongoose.Schema({
   comments: {
     type: String,
   },
-  logo: {
+  avatar: {
     type: String, // Assuming this will hold the image URL or file path
   },
 });
