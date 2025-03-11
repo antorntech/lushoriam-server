@@ -13,10 +13,10 @@ exports.placeOrder = async (req, res) => {
       productName,
       productImage,
       quantity,
+      price,
       totalAmount,
     } = req.body;
 
-    console.log(productId);
     if (
       !name ||
       !address ||
@@ -25,6 +25,7 @@ exports.placeOrder = async (req, res) => {
       !productName ||
       !productImage ||
       !quantity ||
+      !price ||
       !totalAmount
     ) {
       return res.status(400).json({ message: "All fields are required." });
@@ -54,6 +55,7 @@ exports.placeOrder = async (req, res) => {
       productName: productName,
       productImage: productImage,
       quantity,
+      price: product.price,
       totalAmount,
     });
 
@@ -109,7 +111,6 @@ exports.updateOrderStatus = async (req, res) => {
   try {
     const { status, productId } = req.body;
 
-    console.log(productId);
     const order = await Orders.findById(req.params.id);
 
     if (!order) return res.status(404).json({ message: "Order not found." });
