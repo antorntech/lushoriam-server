@@ -44,10 +44,12 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: "Not enough stock available." });
     }
 
-    const uniqueOrderId = Date.now().toString();
+    const uniqueOrderId = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
 
     const newOrder = new Orders({
-      orderId: uniqueOrderId,
+      orderId: "L" + uniqueOrderId,
       name,
       address,
       mobile,
