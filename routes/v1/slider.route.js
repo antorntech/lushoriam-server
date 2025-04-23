@@ -8,10 +8,9 @@ const { auth } = require("../../middleware/auth");
 app.get("/", auth, slidersController.getSliders);
 app.get("/recent", auth, slidersController.getRecentSliders);
 app.get("/:slidersId", auth, slidersController.singleSliders);
-app.post("/add", auth, upload.single("banner"), slidersController.addSliders);
+app.post("/add", upload.single("banner"), slidersController.addSliders);
 app.put(
   "/update/:slidersId",
-  auth,
   upload.single("banner"),
   slidersController.updateSliders
 );
