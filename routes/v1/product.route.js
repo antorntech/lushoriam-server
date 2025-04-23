@@ -3,16 +3,19 @@ const app = express.Router();
 
 const productsController = require("../../controllers/products.controller");
 
-app.get("/", productsController.getProducts);
-app.get("/recent", productsController.getRecentProducts);
-app.get("/:productsId", productsController.singleProducts);
-app.post("/add", upload.single("banner"), productsController.addProducts);
+const { auth } = require("../../middleware/auth");
+
+app.get("/", auth, productsController.getProducts);
+app.get("/recent", auth, productsController.getRecentProducts);
+app.get("/:productsId", auth, productsController.singleProducts);
+app.post("/add", auth, upload.single("banner"), productsController.addProducts);
 app.put(
   "/update/:productsId",
+  auth,
   upload.single("banner"),
   productsController.updateProducts
 );
-app.patch("/status/:productsId", productsController.updateProductStatus);
-app.delete("/delete/:productsId", productsController.deleteProducts);
+app.patch("/status/:productsId", auth, productsController.updateProductStatus);
+app.delete("/delete/:productsId", auth, productsController.deleteProducts);
 
 module.exports = app;
