@@ -1,8 +1,6 @@
 {
-  "rewrites": [
-    {
-      "source": "/{.*}",
-      "destinaton": "/"
-    }
-  ]
+  "version": 2,
+  "name": "vercel-nextjs",
+  "builds": [{ "src": "/index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "/index.js" }]
 }
