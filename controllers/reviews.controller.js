@@ -47,11 +47,11 @@ module.exports.singleReviews = async (req, res) => {
 // Add a new training
 module.exports.addReviews = async (req, res) => {
   try {
-    if (req.file) {
-      Object.assign(req.body, {
-        avatar: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     avatar: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const newReviews = await Reviews.create(req.body);
 
@@ -70,11 +70,11 @@ module.exports.updateReviews = async (req, res) => {
   try {
     const { reviewsId } = req.params;
 
-    if (req.file) {
-      Object.assign(req.body, {
-        avatar: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     avatar: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const updatedReview = await Reviews.findByIdAndUpdate(reviewsId, req.body, {
       new: true,

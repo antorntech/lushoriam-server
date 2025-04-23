@@ -8,12 +8,14 @@ const { auth } = require("../../middleware/auth");
 app.get("/", reviewsController.getReviews);
 app.get("/recent", reviewsController.getRecentReviews);
 app.get("/:reviewsId", reviewsController.singleReviews);
-app.post("/add", upload.single("avatar"), reviewsController.addReviews);
-app.put(
-  "/update/:reviewsId",
-  upload.single("avatar"),
-  reviewsController.updateReviews
-);
+app.post("/add", reviewsController.addReviews);
+app.put("/update/:reviewsId", reviewsController.updateReviews);
+// app.post("/add", upload.single("avatar"), reviewsController.addReviews);
+// app.put(
+//   "/update/:reviewsId",
+//   upload.single("avatar"),
+//   reviewsController.updateReviews
+// );
 app.delete("/delete/:reviewsId", reviewsController.deleteReviews);
 
 module.exports = app;

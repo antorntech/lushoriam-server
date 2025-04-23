@@ -47,11 +47,11 @@ module.exports.singleSliders = async (req, res) => {
 // Add a new training
 module.exports.addSliders = async (req, res) => {
   try {
-    if (req.file) {
-      Object.assign(req.body, {
-        banner: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     banner: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const newSliders = await Sliders.create(req.body);
 
@@ -70,11 +70,11 @@ module.exports.updateSliders = async (req, res) => {
   try {
     const { slidersId } = req.params;
 
-    if (req.file) {
-      Object.assign(req.body, {
-        banner: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     banner: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const updatedSlider = await Sliders.findByIdAndUpdate(slidersId, req.body, {
       new: true,
