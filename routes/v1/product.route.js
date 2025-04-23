@@ -11,11 +11,10 @@ app.get("/:productsId", auth, productsController.singleProducts);
 app.post("/add", upload.single("banner"), productsController.addProducts);
 app.put(
   "/update/:productsId",
-
   upload.single("banner"),
   productsController.updateProducts
 );
-app.patch("/status/:productsId", auth, productsController.updateProductStatus);
+app.patch("/status/:productsId", productsController.updateProductStatus);
 app.delete("/delete/:productsId", auth, productsController.deleteProducts);
 
 module.exports = app;
