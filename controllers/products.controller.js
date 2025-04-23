@@ -47,11 +47,11 @@ module.exports.singleProducts = async (req, res) => {
 // Add a new training
 module.exports.addProducts = async (req, res) => {
   try {
-    if (req.file) {
-      Object.assign(req.body, {
-        banner: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     banner: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const newProducts = await Products.create(req.body);
 
@@ -70,11 +70,11 @@ module.exports.updateProducts = async (req, res) => {
   try {
     const { productsId } = req.params;
 
-    if (req.file) {
-      Object.assign(req.body, {
-        banner: "/uploads/images/" + req.file.filename,
-      });
-    }
+    // if (req.file) {
+    //   Object.assign(req.body, {
+    //     banner: "/uploads/images/" + req.file.filename,
+    //   });
+    // }
 
     const updatedProduct = await Products.findByIdAndUpdate(
       productsId,
