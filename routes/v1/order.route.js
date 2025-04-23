@@ -6,7 +6,7 @@ const ordersController = require("../../controllers/orders.controller");
 const { auth } = require("../../middleware/auth");
 
 // Place a new order
-app.post("/", auth, ordersController.placeOrder);
+app.post("/", ordersController.placeOrder);
 
 // Get all orders
 app.get("/", auth, ordersController.getOrders);
