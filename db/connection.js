@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const url = "mongodb://127.0.0.1:27017/lushoriam-db";
+const url = process.env.DB_URL;
 
 const connection = async () => {
   try {
