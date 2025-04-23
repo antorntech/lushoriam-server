@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const url = process.env.DB_URL;
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.vtlneg9.mongodb.net/`;
 
 const connection = async () => {
   try {
