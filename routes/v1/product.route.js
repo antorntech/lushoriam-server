@@ -8,10 +8,10 @@ const { auth } = require("../../middleware/auth");
 app.get("/", auth, productsController.getProducts);
 app.get("/recent", auth, productsController.getRecentProducts);
 app.get("/:productsId", auth, productsController.singleProducts);
-app.post("/add", auth, upload.single("banner"), productsController.addProducts);
+app.post("/add", upload.single("banner"), productsController.addProducts);
 app.put(
   "/update/:productsId",
-  auth,
+
   upload.single("banner"),
   productsController.updateProducts
 );
