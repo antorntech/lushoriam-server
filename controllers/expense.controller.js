@@ -13,23 +13,65 @@ const Expense = require("../models/Expense");
 //   }
 // };
 
+// module.exports.getExpenses = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
+
+//     // Total document count
+//     const totalExpenses = await Expense.countDocuments();
+
+//     // Paginated expenses
+//     const expenses = await Expense.find({})
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ date: -1 });
+
+//     // Calculate total amount
+//     const totalAmountAgg = await Expense.aggregate([
+//       { $group: { _id: null, total: { $sum: "$amount" } } },
+//     ]);
+//     const totalExpenseAmount = totalAmountAgg[0]?.total || 0;
+
+//     res.status(200).json({
+//       status: "success",
+//       total: totalExpenses,
+//       totalExpenseAmount, // 💰 added total amount
+//       page,
+//       pages: Math.ceil(totalExpenses / limit),
+//       expenses,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       status: "fail",
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 module.exports.getExpenses = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const category = req.query.category;
 
-    // Total document count
-    const totalExpenses = await Expense.countDocuments();
+    const filter = category ? { name: category } : {};
 
-    // Paginated expenses
-    const expenses = await Expense.find({})
+    // Total document count for the given category
+    const totalExpenses = await Expense.countDocuments(filter);
+
+    // Paginated expenses for the given category
+    const expenses = await Expense.find(filter)
       .skip(skip)
       .limit(limit)
       .sort({ date: -1 });
 
-    // Calculate total amount
+    // Total amount for the given category
     const totalAmountAgg = await Expense.aggregate([
+      { $match: filter },
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
     const totalExpenseAmount = totalAmountAgg[0]?.total || 0;
@@ -37,7 +79,7 @@ module.exports.getExpenses = async (req, res) => {
     res.status(200).json({
       status: "success",
       total: totalExpenses,
-      totalExpenseAmount, // 💰 added total amount
+      totalExpenseAmount,
       page,
       pages: Math.ceil(totalExpenses / limit),
       expenses,
