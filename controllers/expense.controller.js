@@ -31,6 +31,7 @@ module.exports.updateExpense = async (req, res) => {
     const { expenseId } = req.params;
     const expense = await Expense.findByIdAndUpdate(expenseId, req.body, {
       new: true,
+      runValidators: true,
     });
     res.status(200).json({
       status: "success",
