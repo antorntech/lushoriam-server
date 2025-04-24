@@ -58,12 +58,12 @@ module.exports.updateExpense = async (req, res) => {
 
 module.exports.deleteExpense = async (req, res) => {
   try {
-    const { expenseId } = req.params;
-    const expense = await Expense.findByIdAndDelete(expenseId);
+    const { expensesId } = req.params;
+    const updateExpense = await Expense.findByIdAndDelete(expensesId);
     res.status(200).json({
       status: "success",
       message: "Expense deleted successfully",
-      data: expense,
+      data: updateExpense,
     });
   } catch (error) {
     res.status(500).json({
