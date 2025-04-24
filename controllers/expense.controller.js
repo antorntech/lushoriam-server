@@ -13,82 +13,23 @@ const Expense = require("../models/Expense");
 //   }
 // };
 
-// module.exports.getExpenses = async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1; // default page = 1
-//     const limit = parseInt(req.query.limit) || 10; // default limit = 10
-//     const skip = (page - 1) * limit;
-
-//     const totalExpenses = await Expense.countDocuments(); // total count
-//     const expenses = await Expense.find({})
-//       .skip(skip)
-//       .limit(limit)
-//       .sort({ date: -1 }); // optional sorting by date (latest first)
-
-//     res.status(200).json({
-//       status: "success",
-//       total: totalExpenses,
-//       page,
-//       pages: Math.ceil(totalExpenses / limit),
-//       expenses,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       status: "fail",
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// };
-
 module.exports.getExpenses = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 10; // default limit = 10
     const skip = (page - 1) * limit;
 
-    const {
-      search = "",
-      fromDate,
-      toDate,
-      minAmount,
-      maxAmount,
-      name, // NEW: name filter
-    } = req.query;
-
-    const filter = {};
-
-    if (search) {
-      filter.description = { $regex: search, $options: "i" };
-    }
-
-    if (fromDate || toDate) {
-      filter.date = {};
-      if (fromDate) filter.date.$gte = new Date(fromDate);
-      if (toDate) filter.date.$lte = new Date(toDate);
-    }
-
-    if (minAmount || maxAmount) {
-      filter.amount = {};
-      if (minAmount) filter.amount.$gte = Number(minAmount);
-      if (maxAmount) filter.amount.$lte = Number(maxAmount);
-    }
-
-    if (name) {
-      filter.name = name; // exact match (case-sensitive by default)
-    }
-
-    const total = await Expense.countDocuments(filter);
-    const expenses = await Expense.find(filter)
-      .sort({ date: -1 })
+    const totalExpenses = await Expense.countDocuments(); // total count
+    const expenses = await Expense.find({})
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ date: -1 }); // optional sorting by date (latest first)
 
     res.status(200).json({
       status: "success",
+      total: totalExpenses,
       page,
-      pages: Math.ceil(total / limit),
-      total,
+      pages: Math.ceil(totalExpenses / limit),
       expenses,
     });
   } catch (error) {
