@@ -137,15 +137,15 @@ module.exports.updateProductStatus = async (req, res) => {
   }
 };
 
-// Delete a training by ID
+// Delete a product by ID
 module.exports.deleteProducts = async (req, res) => {
   try {
     const { productsId } = req.params;
-    const training = await Products.findByIdAndDelete(productsId);
+    const products = await Products.findByIdAndDelete(productsId);
     res.status(200).json({
       status: "success",
       message: "Product deleted successfully",
-      data: training,
+      data: products,
     });
   } catch (error) {
     res.status(500).json({

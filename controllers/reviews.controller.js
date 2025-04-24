@@ -102,11 +102,11 @@ module.exports.updateReviews = async (req, res) => {
 module.exports.deleteReviews = async (req, res) => {
   try {
     const { reviewsId } = req.params;
-    const training = await Reviews.findByIdAndDelete(reviewsId);
+    const reviews = await Reviews.findByIdAndDelete(reviewsId);
     res.status(200).json({
       status: "success",
       message: "Review deleted successfully",
-      data: training,
+      data: reviews,
     });
   } catch (error) {
     res.status(500).json({
