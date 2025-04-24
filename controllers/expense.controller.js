@@ -1,9 +1,37 @@
 const Expense = require("../models/Expense");
 
+// module.exports.getExpenses = async (req, res) => {
+//   try {
+//     const expenses = await Expense.find({});
+//     res.status(200).send(expenses);
+//   } catch (error) {
+//     res.status(500).json({
+//       status: "fail",
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 module.exports.getExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({});
-    res.status(200).send(expenses);
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 10; // default limit = 10
+    const skip = (page - 1) * limit;
+
+    const totalExpenses = await Expense.countDocuments(); // total count
+    const expenses = await Expense.find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ date: -1 }); // optional sorting by date (latest first)
+
+    res.status(200).json({
+      status: "success",
+      total: totalExpenses,
+      page,
+      pages: Math.ceil(totalExpenses / limit),
+      expenses,
+    });
   } catch (error) {
     res.status(500).json({
       status: "fail",
