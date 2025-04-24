@@ -15,19 +15,29 @@ const Expense = require("../models/Expense");
 
 module.exports.getExpenses = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // default page = 1
-    const limit = parseInt(req.query.limit) || 10; // default limit = 10
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const totalExpenses = await Expense.countDocuments(); // total count
+    // Total document count
+    const totalExpenses = await Expense.countDocuments();
+
+    // Paginated expenses
     const expenses = await Expense.find({})
       .skip(skip)
       .limit(limit)
-      .sort({ date: -1 }); // optional sorting by date (latest first)
+      .sort({ date: -1 });
+
+    // Calculate total amount
+    const totalAmountAgg = await Expense.aggregate([
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    const totalExpenseAmount = totalAmountAgg[0]?.total || 0;
 
     res.status(200).json({
       status: "success",
       total: totalExpenses,
+      totalExpenseAmount, // 💰 added total amount
       page,
       pages: Math.ceil(totalExpenses / limit),
       expenses,
