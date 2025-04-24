@@ -28,22 +28,31 @@ module.exports.addExpense = async (req, res) => {
 
 module.exports.updateExpense = async (req, res) => {
   try {
-    const { expenseId } = req.params;
-    const expense = await Expense.findByIdAndUpdate(expenseId, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const { expensesId } = req.params;
+
+    const updatedExpense = await Expense.findByIdAndUpdate(
+      expensesId,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedExpense) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Expense not found!",
+      });
+    }
+
     res.status(200).json({
       status: "success",
-      message: "Expense updated successfully",
-      data: expense,
+      message: "Expense updated successfully!",
+      data: updatedExpense,
     });
   } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.status(500).send("Internal Server Error");
   }
 };
 
