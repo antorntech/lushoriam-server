@@ -69,17 +69,24 @@ module.exports.getExpenses = async (req, res) => {
       .limit(limit)
       .sort({ date: -1 });
 
+    //   Total Amount for all
+    const totalExAmountAgg = await Expense.aggregate([
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    const totalExpenseAmount = totalExAmountAgg[0]?.total || 0;
+
     // Total amount for the given category
     const totalAmountAgg = await Expense.aggregate([
       { $match: filter },
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
-    const totalExpenseAmount = totalAmountAgg[0]?.total || 0;
+    const totalCatExpenseAmount = totalAmountAgg[0]?.total || 0;
 
     res.status(200).json({
       status: "success",
       total: totalExpenses,
       totalExpenseAmount,
+      totalCatExpenseAmount,
       page,
       pages: Math.ceil(totalExpenses / limit),
       expenses,
