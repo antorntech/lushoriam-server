@@ -15,7 +15,7 @@ app.get("/", auth, ordersController.getOrders);
 app.get("/:id", auth, ordersController.getOrderById);
 
 // Update order status
-app.put("/:id", ordersController.updateOrderStatus);
+app.put("/:id", auth, ordersController.updateOrderStatus);
 
 // Delete an order
 app.delete("/:id", auth, ordersController.deleteOrder);
