@@ -116,6 +116,17 @@ exports.updateReturnParcelStatus = async (req, res) => {
           message: "Related order not found",
         });
       }
+    } else if (status === "rejected") {
+      const orderUpdated = await Orders.findByIdAndUpdate(updated.customerId, {
+        status: "rejected",
+      });
+
+      if (!orderUpdated) {
+        return res.status(404).json({
+          success: false,
+          message: "Related order not found",
+        });
+      }
     }
 
     res.status(200).json({ success: true, data: updated });
