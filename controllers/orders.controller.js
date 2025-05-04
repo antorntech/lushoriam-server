@@ -102,8 +102,16 @@ exports.getOrders = async (req, res) => {
   const skip = (page - 1) * limit;
   const search = req.query.search || "";
 
+  // 🔍 Multiple fields search
   const query = search
-    ? { customerName: { $regex: search, $options: "i" } }
+    ? {
+        $or: [
+          { customerName: { $regex: search, $options: "i" } },
+          { orderId: { $regex: search, $options: "i" } },
+          { mobile: { $regex: search, $options: "i" } },
+          { deliveryStatus: { $regex: search, $options: "i" } },
+        ],
+      }
     : {};
 
   try {
