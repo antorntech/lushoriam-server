@@ -106,7 +106,7 @@ exports.getOrders = async (req, res) => {
   const query = search
     ? {
         $or: [
-          { customerName: { $regex: search, $options: "i" } },
+          { name: { $regex: search, $options: "i" } },
           { orderId: { $regex: search, $options: "i" } },
           { mobile: { $regex: search, $options: "i" } },
           { deliveryStatus: { $regex: search, $options: "i" } },
