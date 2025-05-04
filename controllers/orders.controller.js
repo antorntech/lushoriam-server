@@ -109,7 +109,7 @@ exports.getOrders = async (req, res) => {
           { name: { $regex: search, $options: "i" } },
           { orderId: { $regex: search, $options: "i" } },
           { mobile: { $regex: search, $options: "i" } },
-          { deliveryStatus: { $regex: search, $options: "i" } },
+          { status: { $regex: search, $options: "i" } },
         ],
       }
     : {};
