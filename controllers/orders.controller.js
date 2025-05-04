@@ -72,11 +72,25 @@ exports.placeOrder = async (req, res) => {
   }
 };
 
-// Get all orders
+// Get all orders with pagination
 exports.getOrders = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const orders = await Orders.find().sort({ createdAt: -1 });
-    res.status(200).json(orders);
+    const totalOrders = await Orders.countDocuments();
+    const orders = await Orders.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      orders,
+      currentPage: page,
+      totalPages: Math.ceil(totalOrders / limit),
+      totalOrders,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error, try again later.", error });
   }
