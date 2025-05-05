@@ -9,6 +9,9 @@ const { auth } = require("../../middleware/auth");
 app.post("/", ordersController.placeOrder);
 
 // Get all orders
+app.get("/simply", auth, ordersController.getOrdersSimply);
+
+// Get all orders
 app.get("/", auth, ordersController.getOrders);
 
 // Get a single order by ID
