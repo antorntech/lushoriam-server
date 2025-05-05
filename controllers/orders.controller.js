@@ -94,9 +94,6 @@ exports.getTodaysConfirmedOrders = async (req, res) => {
     const startOfDay = new Date(today.setHours(0, 0, 0, 0));
     const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
-    console.log("Start of Day:", startOfDay);
-    console.log("End of Day:", endOfDay);
-
     // MongoDB query to count confirmed orders created today
     const confirmedOrdersCount = await Orders.countDocuments({
       status: "confirmed",
@@ -105,8 +102,6 @@ exports.getTodaysConfirmedOrders = async (req, res) => {
         $lte: endOfDay,
       },
     });
-
-    console.log("Confirmed Orders Count:", confirmedOrdersCount);
 
     res.status(200).json({ confirmedOrdersCount });
   } catch (error) {
