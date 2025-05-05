@@ -8,10 +8,13 @@ const { auth } = require("../../middleware/auth");
 // Place a new order
 app.post("/", ordersController.placeOrder);
 
-// Get all orders
+// Get all orders simply
 app.get("/simply", auth, ordersController.getOrdersSimply);
 
-// Get all orders
+// Get today's confirmed orders
+app.get("/todays/confirmed", auth, ordersController.getTodaysConfirmedOrders);
+
+// Get all orders with pagination
 app.get("/", auth, ordersController.getOrders);
 
 // Get a single order by ID

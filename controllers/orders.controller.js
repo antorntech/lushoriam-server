@@ -87,6 +87,28 @@ exports.getOrdersSimply = async (req, res) => {
   }
 };
 
+// Get today's confirmed orders
+exports.getTodaysConfirmedOrders = async (req, res) => {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const confirmedOrdersCount = await Orders.countDocuments({
+      deliveryStatus: "confirmed",
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
+
+    res.status(200).json({ confirmedOrdersCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error, try again later.", error });
+  }
+};
+
 exports.getOrders = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
