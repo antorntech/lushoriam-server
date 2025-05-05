@@ -91,14 +91,17 @@ exports.getOrdersSimply = async (req, res) => {
 exports.getTodaysConfirmedOrders = async (req, res) => {
   try {
     const today = new Date();
+    // Set start of today (00:00 AM)
     const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    // Set end of today (11:59:59 PM)
     const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
+    // MongoDB query to count confirmed orders created today
     const confirmedOrdersCount = await Orders.countDocuments({
-      deliveryStatus: "confirmed",
+      deliveryStatus: "confirmed", // Make sure this field is 'confirmed' in your data
       createdAt: {
-        $gte: startOfDay,
-        $lte: endOfDay,
+        $gte: startOfDay, // Greater than or equal to startOfDay
+        $lte: endOfDay, // Less than or equal to endOfDay
       },
     });
 
