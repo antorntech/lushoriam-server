@@ -73,7 +73,7 @@ exports.placeOrder = async (req, res) => {
 };
 
 // Get all orders with pagination
-exports.getOrdersSimply = async (req, res) => {
+exports.getOrders = async (req, res) => {
   try {
     const totalOrders = await Orders.countDocuments();
     const orders = await Orders.find();
