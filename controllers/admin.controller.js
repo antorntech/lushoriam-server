@@ -145,13 +145,15 @@ module.exports.updatedAdmin = async (req, res) => {
 
 module.exports.changePassword = async (req, res) => {
   try {
-    const userId = req.user.id; // ধরছি JWT middleware থেকে user.id পাওয়া যাচ্ছে
+    const userId = req.adminId;
+
     const { password } = req.body;
 
     if (!password || password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters long." });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -163,12 +165,19 @@ module.exports.changePassword = async (req, res) => {
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found." });
     }
 
-    res.status(200).json({ message: "Password changed successfully." });
+    res
+      .status(200)
+      .json({ success: true, message: "Password changed successfully." });
   } catch (error) {
     console.error("Change password error:", error);
-    res.status(500).json({ message: "Server error. Please try again later." });
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
   }
 };
