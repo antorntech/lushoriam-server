@@ -1,6 +1,6 @@
 const Orders = require("../models/Orders");
 const Products = require("../models/Products");
-const { sendServerSideEvent } = require("../utils/fbPixel");
+const { sendServerSideEvent, hashEmail } = require("../utils/fbPixel");
 // const nodemailer = require("nodemailer");
 
 // Place a new order
@@ -153,6 +153,7 @@ exports.placeOrder = async (req, res) => {
       order: newOrder,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error, try again later.", error });
   }
 };
