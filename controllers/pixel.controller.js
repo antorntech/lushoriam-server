@@ -1,6 +1,6 @@
 // controllers/pixel.controller.js
 
-const { sendServerSideEvent } = require("../utils/fbPixel");
+const { sendServerSideEvent, hashEmail } = require("../utils/fbPixel");
 
 exports.trackPageView = async (req, res) => {
   try {
