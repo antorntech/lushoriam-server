@@ -51,6 +51,7 @@ const reviewsRoutes = require("./routes/v1/review.route");
 const ordersRoutes = require("./routes/v1/order.route");
 const expenseRoutes = require("./routes/v1/expense.route");
 const returnparcelRoutes = require("./routes/v1/returnparcel.route");
+const pixelRoutes = require("./routes/v1/pixel.route");
 
 const connection = require("./db/connection");
 
@@ -72,6 +73,7 @@ app.use("/api/v1/reviews", reviewsRoutes);
 app.use("/api/v1/orders", ordersRoutes);
 app.use("/api/v1/expenses", expenseRoutes);
 app.use("/api/v1/returnparcels", returnparcelRoutes);
+app.use("/api/v1/pixel", pixelRoutes);
 
 app.listen(port, () => {
   console.log("listening on port " + port);

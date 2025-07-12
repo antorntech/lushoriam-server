@@ -1,8 +1,78 @@
 const Orders = require("../models/Orders");
 const Products = require("../models/Products");
+const { sendServerSideEvent } = require("../utils/fbPixel");
 // const nodemailer = require("nodemailer");
 
 // Place a new order
+// exports.placeOrder = async (req, res) => {
+//   try {
+//     const {
+//       name,
+//       address,
+//       mobile,
+//       delivery,
+//       productId,
+//       productName,
+//       productImage,
+//       quantity,
+//       price,
+//       totalAmount,
+//     } = req.body;
+
+//     if (
+//       !name ||
+//       !address ||
+//       !mobile ||
+//       !productId ||
+//       !productName ||
+//       !productImage ||
+//       !quantity ||
+//       !price ||
+//       !totalAmount
+//     ) {
+//       return res.status(400).json({ message: "All fields are required." });
+//     }
+
+//     // ✅ Find the product in the database
+//     const product = await Products.findById(productId);
+
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found." });
+//     }
+
+//     // ✅ Check if enough stock is available
+//     if (product.quantity < quantity) {
+//       return res.status(400).json({ message: "Not enough stock available." });
+//     }
+
+//     const uniqueOrderId = Math.floor(
+//       100000 + Math.random() * 900000
+//     ).toString();
+
+//     const newOrder = new Orders({
+//       orderId: "L" + uniqueOrderId,
+//       name,
+//       address,
+//       mobile,
+//       delivery,
+//       productId: productId,
+//       productName: productName,
+//       productImage: productImage,
+//       quantity,
+//       price: product.price,
+//       totalAmount,
+//     });
+
+//     await newOrder.save();
+
+//     res
+//       .status(201)
+//       .json({ message: "Order placed successfully!", order: newOrder });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error, try again later.", error });
+//   }
+// };
+
 exports.placeOrder = async (req, res) => {
   try {
     const {
@@ -32,14 +102,12 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // ✅ Find the product in the database
     const product = await Products.findById(productId);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // ✅ Check if enough stock is available
     if (product.quantity < quantity) {
       return res.status(400).json({ message: "Not enough stock available." });
     }
@@ -54,9 +122,9 @@ exports.placeOrder = async (req, res) => {
       address,
       mobile,
       delivery,
-      productId: productId,
-      productName: productName,
-      productImage: productImage,
+      productId,
+      productName,
+      productImage,
       quantity,
       price: product.price,
       totalAmount,
@@ -64,9 +132,26 @@ exports.placeOrder = async (req, res) => {
 
     await newOrder.save();
 
-    res
-      .status(201)
-      .json({ message: "Order placed successfully!", order: newOrder });
+    // ✅ Facebook Server-Side Pixel: Track Purchase
+    await sendServerSideEvent({
+      eventName: "Purchase",
+      userData: {
+        client_ip_address: req.ip,
+        client_user_agent: req.headers["user-agent"],
+        em: mobile ? [hashEmail(mobile)] : [], // অথবা email থাকলে সেটাও use করতে পারো
+      },
+      eventData: {
+        value: totalAmount,
+        currency: "BDT",
+        content_ids: [productId],
+        content_type: "product",
+      },
+    });
+
+    res.status(201).json({
+      message: "Order placed successfully!",
+      order: newOrder,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error, try again later.", error });
   }
