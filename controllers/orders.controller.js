@@ -88,6 +88,7 @@ exports.placeOrder = async (req, res) => {
       totalAmount,
     } = req.body;
 
+    // ✅ Validation check
     if (
       !name ||
       !address ||
@@ -102,22 +103,23 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
+    // ✅ Product check
     const product = await Products.findById(productId);
-
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
+    // ✅ Stock check
     if (product.quantity < quantity) {
       return res.status(400).json({ message: "Not enough stock available." });
     }
 
-    const uniqueOrderId = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    // ✅ Generate unique order ID
+    const uniqueOrderId =
+      "L" + Math.floor(100000 + Math.random() * 900000).toString();
 
     const newOrder = new Orders({
-      orderId: "L" + uniqueOrderId,
+      orderId: uniqueOrderId,
       name,
       address,
       mobile,
@@ -136,9 +138,10 @@ exports.placeOrder = async (req, res) => {
     await sendServerSideEvent({
       eventName: "Purchase",
       userData: {
-        client_ip_address: req.ip,
+        client_ip_address:
+          req.headers["x-forwarded-for"] || req.socket.remoteAddress,
         client_user_agent: req.headers["user-agent"],
-        em: mobile ? [hashEmail(mobile)] : [], // অথবা email থাকলে সেটাও use করতে পারো
+        em: mobile ? [hashEmail(mobile)] : [],
       },
       eventData: {
         value: totalAmount,
@@ -146,15 +149,18 @@ exports.placeOrder = async (req, res) => {
         content_ids: [productId],
         content_type: "product",
       },
+      eventId: `order-${uniqueOrderId}`, // Optional, useful for deduplication
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Order placed successfully!",
       order: newOrder,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error, try again later.", error });
+    console.error("❌ Order Placement Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error, try again later.", error });
   }
 };
 
