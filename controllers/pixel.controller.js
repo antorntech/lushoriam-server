@@ -1,38 +1,3 @@
-// const { sendServerSideEvent, hashEmail } = require("../utils/fbPixel");
-
-// exports.trackPageView = async (req, res) => {
-//   try {
-//     const email = req.body.email;
-
-//     // ✅ Prepare user data
-//     const userData = {
-//       client_ip_address:
-//         req.headers["x-forwarded-for"] || req.socket?.remoteAddress,
-//       client_user_agent: req.headers["user-agent"],
-//     };
-
-//     if (email) {
-//       userData.em = [hashEmail(email)];
-//     }
-
-//     // ✅ Send PageView event
-//     await sendServerSideEvent({
-//       eventName: "PageView",
-//       userData,
-//       eventData: {},
-//       eventId: `pageview-${Date.now()}`, // Optional deduplication ID
-//     });
-
-//     res.status(200).json({ message: "✅ PageView Tracked" });
-//   } catch (error) {
-//     console.error(
-//       "❌ PageView Track Error:",
-//       error?.response?.data || error.message
-//     );
-//     res.status(500).json({ message: "Failed to track PageView" });
-//   }
-// };
-
 const {
   sendServerSideEvent,
   hashEmail,
@@ -43,36 +8,50 @@ exports.trackPageView = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // ✅ Prepare user data for CAPI
+    // ✅ Prepare user_data for Facebook CAPI
     const userData = {
       client_ip_address:
         req.headers["x-forwarded-for"] ||
         req.connection?.remoteAddress ||
-        req.socket?.remoteAddress,
-      client_user_agent: req.headers["user-agent"],
+        req.socket?.remoteAddress ||
+        req.info?.remoteAddress ||
+        null,
+      client_user_agent: req.headers["user-agent"] || null,
     };
 
+    // ✅ Add hashed email (if provided)
     if (email) {
       userData.em = [hashEmail(email)];
     }
 
-    // ✅ Generate deduplication-safe event ID
+    // ✅ Generate unique event ID (used for deduplication)
     const eventId = generateEventId();
 
-    // ✅ Send PageView event to Facebook CAPI
+    // ✅ Optional: custom_data for more tracking (like page, tags, etc.)
+    const eventData = {
+      page_title: req.headers.referer || "Unknown Page",
+    };
+
+    // ✅ Send server-side PageView event
     await sendServerSideEvent({
       eventName: "PageView",
       userData,
-      eventData: {}, // Add content_type or page_title if needed
+      eventData,
       eventId,
     });
 
-    res.status(200).json({ message: "✅ PageView Tracked", eventId });
+    return res.status(200).json({
+      message: "✅ PageView tracked successfully",
+      eventId, // frontend can also use this to deduplicate
+    });
   } catch (error) {
     console.error(
       "❌ PageView Track Error:",
       error?.response?.data || error.message
     );
-    res.status(500).json({ message: "❌ Failed to track PageView" });
+    return res.status(500).json({
+      message: "❌ Failed to track PageView",
+      error: error?.message || "Unknown error",
+    });
   }
 };
