@@ -248,7 +248,7 @@ exports.placeOrder = async (req, res) => {
         content_ids: [productId],
         content_type: "product",
       },
-      eventId: `order-${eventId}`,
+      eventId: eventId,
     });
 
     return res.status(201).json({

@@ -124,6 +124,7 @@ const sendServerSideEvent = async ({
     }
 
     const response = await axios.post(url, payload);
+    console.log("✅ Payload:", payload);
     console.log("✅ Facebook Pixel Event Sent:", response.data);
   } catch (error) {
     console.error(
