@@ -1,6 +1,10 @@
 const Orders = require("../models/Orders");
 const Products = require("../models/Products");
-const { sendServerSideEvent, hashEmail } = require("../utils/fbPixel");
+const {
+  sendServerSideEvent,
+  hashEmail,
+  generateEventId,
+} = require("../utils/fbPixel");
 // const nodemailer = require("nodemailer");
 
 // Place a new order
@@ -73,6 +77,97 @@ const { sendServerSideEvent, hashEmail } = require("../utils/fbPixel");
 //   }
 // };
 
+// exports.placeOrder = async (req, res) => {
+//   try {
+//     const {
+//       name,
+//       address,
+//       mobile,
+//       delivery,
+//       productId,
+//       productName,
+//       productImage,
+//       quantity,
+//       price,
+//       totalAmount,
+//     } = req.body;
+
+//     // ✅ Validation check
+//     if (
+//       !name ||
+//       !address ||
+//       !mobile ||
+//       !productId ||
+//       !productName ||
+//       !productImage ||
+//       !quantity ||
+//       !price ||
+//       !totalAmount
+//     ) {
+//       return res.status(400).json({ message: "All fields are required." });
+//     }
+
+//     // ✅ Product check
+//     const product = await Products.findById(productId);
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found." });
+//     }
+
+//     // ✅ Stock check
+//     if (product.quantity < quantity) {
+//       return res.status(400).json({ message: "Not enough stock available." });
+//     }
+
+//     // ✅ Generate unique order ID
+//     const uniqueOrderId =
+//       "L" + Math.floor(100000 + Math.random() * 900000).toString();
+
+//     const newOrder = new Orders({
+//       orderId: uniqueOrderId,
+//       name,
+//       address,
+//       mobile,
+//       delivery,
+//       productId,
+//       productName,
+//       productImage,
+//       quantity,
+//       price: product.price,
+//       totalAmount,
+//     });
+
+//     await newOrder.save();
+
+//     // ✅ Facebook Server-Side Pixel: Track Purchase
+//     await sendServerSideEvent({
+//       eventName: "Purchase",
+//       userData: {
+//         client_ip_address:
+//           req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+//         client_user_agent: req.headers["user-agent"],
+//         em: mobile ? [hashEmail(mobile)] : [],
+//       },
+//       eventData: {
+//         value: totalAmount,
+//         currency: "BDT",
+//         content_ids: [productId],
+//         content_type: "product",
+//       },
+//       eventId: `order-${uniqueOrderId}`, // Optional, useful for deduplication
+//     });
+
+//     return res.status(201).json({
+//       message: "Order placed successfully!",
+//       order: newOrder,
+//     });
+//   } catch (error) {
+//     console.error("❌ Order Placement Error:", error);
+//     return res
+//       .status(500)
+//       .json({ message: "Server error, try again later.", error });
+//   }
+// };
+
 exports.placeOrder = async (req, res) => {
   try {
     const {
@@ -88,7 +183,7 @@ exports.placeOrder = async (req, res) => {
       totalAmount,
     } = req.body;
 
-    // ✅ Validation check
+    // ✅ Required field validation
     if (
       !name ||
       !address ||
@@ -103,18 +198,18 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // ✅ Product check
+    // ✅ Product existence check
     const product = await Products.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // ✅ Stock check
+    // ✅ Stock validation
     if (product.quantity < quantity) {
       return res.status(400).json({ message: "Not enough stock available." });
     }
 
-    // ✅ Generate unique order ID
+    // ✅ Generate order ID
     const uniqueOrderId =
       "L" + Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -134,12 +229,16 @@ exports.placeOrder = async (req, res) => {
 
     await newOrder.save();
 
-    // ✅ Facebook Server-Side Pixel: Track Purchase
+    // ✅ Generate unique event ID for deduplication
+    const eventId = generateEventId();
+
+    // ✅ Facebook Pixel: Purchase event
     await sendServerSideEvent({
       eventName: "Purchase",
+      eventId,
       userData: {
         client_ip_address:
-          req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+          req.headers["x-forwarded-for"] || req.socket?.remoteAddress,
         client_user_agent: req.headers["user-agent"],
         em: mobile ? [hashEmail(mobile)] : [],
       },
@@ -149,12 +248,12 @@ exports.placeOrder = async (req, res) => {
         content_ids: [productId],
         content_type: "product",
       },
-      eventId: `order-${uniqueOrderId}`, // Optional, useful for deduplication
     });
 
     return res.status(201).json({
       message: "Order placed successfully!",
       order: newOrder,
+      eventId, // Optional: send to frontend for deduplication with fbq()
     });
   } catch (error) {
     console.error("❌ Order Placement Error:", error);
