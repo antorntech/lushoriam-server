@@ -243,8 +243,8 @@ exports.placeOrder = async (req, res) => {
         em: mobile ? [hashEmail(mobile)] : [],
       },
       eventData: {
-        value: totalAmount,
-        currency: "BDT",
+        value: Number(totalAmount), // ✅ MUST be numeric
+        currency: "BDT", // ✅ Must be 3-letter string, all uppercase
         content_ids: [productId],
         content_type: "product",
       },
