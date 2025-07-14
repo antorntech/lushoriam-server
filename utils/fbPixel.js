@@ -32,7 +32,7 @@ const sendServerSideEvent = async ({
   testEventCode,
 }) => {
   try {
-    const url = `https://graph.facebook.com/v18.0/${process.env.FB_PIXEL_ID}/events`;
+    const url = `https://graph.facebook.com/v23.0/${process.env.FB_PIXEL_ID}/events`;
 
     // ✅ Ensure valid 'value' & 'currency'
     const safeEventData = {
